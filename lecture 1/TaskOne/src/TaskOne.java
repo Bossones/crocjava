@@ -9,24 +9,27 @@ public class TaskOne {
      * @return an modified array
      */
     public static int[] minMax(int[] array) {
-        int[] values = new int[] {array[0], array[array.length - 1], 0, array.length - 1};
+        int max = array[array.length - 1];
+        int indexMax = array.length - 1;
+        int min = array[0];
+        int indexMin = 0;
         for (int i = 0; i < array.length; i++) {
-            if (array[i] < values[0]) {
-                values[0] = array[i];
-                values[2] = i;
+            if (array[i] < min) {
+                min = array[i];
+                indexMin = i;
             }
-            if (array[i] > values[1]) {
-                values[1] = array[i];
-                values[3] = i;
+            if (array[i] > max) {
+                max = array[i];
+                indexMax = i;
             }
         }
-        if (array[0] != values[0]) {
-            array[values[2]] = array[0];
-            array[0] = values[0];
+        if (array[0] != min) {
+            array[indexMin] = array[0];
+            array[0] = min;
         }
-        if (array[array.length - 1] != values[1]) {
-            array[values[3]] = array[array.length - 1];
-            array[array.length - 1] = values[1];
+        if (array[array.length - 1] != max) {
+            array[indexMax] = array[array.length - 1];
+            array[array.length - 1] = max;
         }
         return array;
     }

@@ -5,7 +5,7 @@ public class TaskTwo {
      * @param value - bytes input
      */
     public static void printBytes(long value) {
-        String[] format = new String[] {"B", "KB", "MB", "GB", "TB", "PB"};
+        String[] format = new String[] {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
         int i = 0;
         double bytes = (double)value;
         for (; bytes >= 1024; bytes /= 1024, i++) {}
@@ -19,6 +19,7 @@ public class TaskTwo {
         printBytes(1024);
         printBytes(5674839345L);
         printBytes(53692044905543L);
+        printBytes(Long.MAX_VALUE);
     }
 }
 /*
@@ -29,4 +30,5 @@ output:
 1,0 KB
 5,3 GB
 48,8 TB
+8,0 EB
  */
