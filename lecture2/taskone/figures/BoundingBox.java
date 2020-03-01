@@ -28,8 +28,7 @@ public class BoundingBox implements Figure {
      * Constructs a {@code BoundingBox} with no parameters.
      */
     public BoundingBox() {
-        lowerLeftCorner = new Coordinate();
-        upperRightCorner = new Coordinate();
+        setCoordinates(new Coordinate(), new Coordinate());
     }
 
     /**
@@ -44,13 +43,10 @@ public class BoundingBox implements Figure {
     public BoundingBox(Coordinate lowerLeftCorner, Coordinate upperRightCorner) {
         if (lowerLeftCorner == null || upperRightCorner == null)
             throw new NullPointerException();
-        if (upperRightCorner.getX() < lowerLeftCorner.getX() ||
-                upperRightCorner.getY() < lowerLeftCorner.getY()) {
-            this.lowerLeftCorner = new Coordinate();
-            this.upperRightCorner = new Coordinate();
+        if (lowerLeftCorner.getX() > upperRightCorner.getX() || lowerLeftCorner.getY() > upperRightCorner.getY()) {
+            setCoordinates(new Coordinate(), new Coordinate());
         } else {
-            this.lowerLeftCorner = new Coordinate(lowerLeftCorner);
-            this.upperRightCorner = new Coordinate(upperRightCorner);
+            setCoordinates(lowerLeftCorner, upperRightCorner);
         }
     }
 
@@ -66,11 +62,9 @@ public class BoundingBox implements Figure {
      */
     public BoundingBox(double x1, double y1, double x2, double y2) {
         if (x2 < x1 || y2 < y1) {
-            lowerLeftCorner = new Coordinate();
-            upperRightCorner = new Coordinate();
+            setCoordinates(new Coordinate(), new Coordinate());
         } else {
-            lowerLeftCorner = new Coordinate(x1, y1);
-            upperRightCorner = new Coordinate(x2, y2);
+            setCoordinates(new Coordinate(x1, y1), new Coordinate(x2, y2));
         }
     }
 
@@ -89,16 +83,12 @@ public class BoundingBox implements Figure {
     /**
      * @return the lower left corner coordinate of {@code BoundingBox}
      */
-    public Coordinate getLowerLeftCorner() {
-        return lowerLeftCorner;
-    }
+    public Coordinate getLowerLeftCorner() { return lowerLeftCorner; }
 
     /**
      * @return the upper right corner coordinate of {@code BoundingBox}
      */
-    public Coordinate getUpperRightCorner() {
-        return upperRightCorner;
-    }
+    public Coordinate getUpperRightCorner() { return upperRightCorner; }
 
     /**
      * {@inheritDoc}
@@ -122,9 +112,7 @@ public class BoundingBox implements Figure {
      * {@inheritDoc}
      */
     @Override
-    public String shapeName() {
-        return "BoundingBox";
-    }
+    public String shapeName() { return "BoundingBox"; }
 
     /**
      * This function sets new coordinates for the current {@code BoundingBox}'s coordinates.
@@ -138,10 +126,9 @@ public class BoundingBox implements Figure {
     public void setCoordinates(Coordinate lowerLeftCorner, Coordinate upperRightCorner) {
         if (lowerLeftCorner == null || upperRightCorner == null)
             throw new NullPointerException();
-        if (upperRightCorner.getX() >= lowerLeftCorner.getX() &&
-                upperRightCorner.getY() >= lowerLeftCorner.getY()) {
-            this.lowerLeftCorner.setCoordinate(lowerLeftCorner);
-            this.upperRightCorner.setCoordinate(upperRightCorner);
+        if (upperRightCorner.getX() >= lowerLeftCorner.getX() && upperRightCorner.getY() >= lowerLeftCorner.getY()) {
+            this.lowerLeftCorner = lowerLeftCorner;
+            this.upperRightCorner = upperRightCorner;
         }
     }
 

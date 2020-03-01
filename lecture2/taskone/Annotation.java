@@ -32,12 +32,7 @@ public class Annotation {
     public Annotation(Figure shape, String nameOfField) {
         if (shape == null || nameOfField == null)
             throw new NullPointerException();
-        if (shape instanceof BoundingBox) {
-            this.shape = new BoundingBox((BoundingBox)shape);
-        } else {
-            this.shape = new Circle((Circle)shape);
-        }
-        this.nameOfField = nameOfField + "";
+        setParameters(shape, nameOfField);
     }
 
     /**
@@ -63,11 +58,7 @@ public class Annotation {
     public void setParameters(Figure shape, String nameOfField) {
         if (shape == null || nameOfField == null)
             throw new NullPointerException();
-        if (shape instanceof BoundingBox) {
-            this.shape = new BoundingBox((BoundingBox)shape);
-        } else {
-            this.shape = new Circle((Circle)shape);
-        }
+        this.shape = shape;
         this.nameOfField = nameOfField + "";
     }
 

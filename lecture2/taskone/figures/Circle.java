@@ -20,7 +20,7 @@ public class Circle implements Figure {
 
     /**
      * The radius of this {@code Circle}
-     * If no radius is set it will set default to {@code (0,0)}
+     * If no radius is set it will set default to 0
      */
     private double radius;
 
@@ -28,8 +28,7 @@ public class Circle implements Figure {
      * Constructs a {@code Circle} with no parameters.
      */
     public Circle() {
-        center = new Coordinate();
-        radius = 0.0;
+        setParameters(new Coordinate(), 0);
     }
 
     /**
@@ -39,10 +38,7 @@ public class Circle implements Figure {
      * @param radius is a radius of {@code Circle}.
      */
     public Circle(Coordinate center, double radius) {
-        if (center == null)
-            throw  new NullPointerException();
-        this.center = new Coordinate(center);
-        this.radius = radius;
+        setParameters(center, radius);
     }
 
     /**
@@ -53,8 +49,7 @@ public class Circle implements Figure {
      * @param radius is a radius of {@code Circle}.
      */
     public Circle(double x, double y, double radius) {
-        center = new Coordinate(x, y);
-        this.radius = radius;
+        setParameters(new Coordinate(x, y), radius);
     }
 
     /**
@@ -117,7 +112,7 @@ public class Circle implements Figure {
     public void setParameters(Coordinate center, double radius) {
         if (center == null)
             throw new NullPointerException();
-        this.center.setCoordinate(center);
+        this.center = center;
         if (radius >= 0)
             this.radius = radius;
     }
@@ -134,6 +129,6 @@ public class Circle implements Figure {
         center.setX(x);
         center.setY(y);
         if (radius >= 0)
-        this.radius = radius;
+            this.radius = radius;
     }
 }

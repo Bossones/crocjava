@@ -44,8 +44,7 @@ public class Coordinate {
     public Coordinate(Coordinate coordinate) {
         if (coordinate == null)
             throw new NullPointerException();
-        x = coordinate.x;
-        y = coordinate.y;
+        setCoordinate(coordinate);
     }
 
     /**
@@ -56,8 +55,8 @@ public class Coordinate {
     public void setCoordinate(Coordinate coordinate) {
         if (coordinate == null)
             throw new NullPointerException();
-        x = coordinate.x;
-        y = coordinate.y;
+        setX(coordinate.x);
+        setY(coordinate.y);
     }
 
     /**
@@ -86,8 +85,6 @@ public class Coordinate {
     /**
      * @return an point's ordinate y.
      */
-    public double getY() {
-        return y;
-    }
+    public double getY() { return y; }
 
 }
