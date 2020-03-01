@@ -1,6 +1,7 @@
 package net.crocjava.lecture2.tasktwo.figures;
 
-import net.crocjava.lecture2.tasktwo.coord.*;
+import net.crocjava.lecture2.tasktwo.coord.Coordinate;
+import net.crocjava.lecture2.tasktwo.coord.Moveable;
 
 /**
  * A {@code BoundingBox} is a box and described by two parameters:
@@ -28,8 +29,7 @@ public class BoundingBox implements Figure, Moveable {
      * Constructs a {@code BoundingBox} with no parameters.
      */
     public BoundingBox() {
-        lowerLeftCorner = new Coordinate();
-        upperRightCorner = new Coordinate();
+        setCoordinates(new Coordinate(), new Coordinate());
     }
 
     /**
@@ -44,13 +44,10 @@ public class BoundingBox implements Figure, Moveable {
     public BoundingBox(Coordinate lowerLeftCorner, Coordinate upperRightCorner) {
         if (lowerLeftCorner == null || upperRightCorner == null)
             throw new NullPointerException();
-        if (upperRightCorner.getX() < lowerLeftCorner.getX() ||
-                upperRightCorner.getY() < lowerLeftCorner.getY()) {
-            this.lowerLeftCorner = new Coordinate();
-            this.upperRightCorner = new Coordinate();
+        if (lowerLeftCorner.getX() > upperRightCorner.getX() || lowerLeftCorner.getY() > upperRightCorner.getY()) {
+            setCoordinates(new Coordinate(), new Coordinate());
         } else {
-            this.lowerLeftCorner = new Coordinate(lowerLeftCorner);
-            this.upperRightCorner = new Coordinate(upperRightCorner);
+            setCoordinates(lowerLeftCorner, upperRightCorner);
         }
     }
 
@@ -66,11 +63,9 @@ public class BoundingBox implements Figure, Moveable {
      */
     public BoundingBox(double x1, double y1, double x2, double y2) {
         if (x2 < x1 || y2 < y1) {
-            lowerLeftCorner = new Coordinate();
-            upperRightCorner = new Coordinate();
+            setCoordinates(new Coordinate(), new Coordinate());
         } else {
-            lowerLeftCorner = new Coordinate(x1, y1);
-            upperRightCorner = new Coordinate(x2, y2);
+            setCoordinates(new Coordinate(x1, y1), new Coordinate(x2, y2));
         }
     }
 
@@ -89,16 +84,12 @@ public class BoundingBox implements Figure, Moveable {
     /**
      * @return the lower left corner coordinate of {@code BoundingBox}
      */
-    public Coordinate getLowerLeftCorner() {
-        return lowerLeftCorner;
-    }
+    public Coordinate getLowerLeftCorner() { return lowerLeftCorner; }
 
     /**
      * @return the upper right corner coordinate of {@code BoundingBox}
      */
-    public Coordinate getUpperRightCorner() {
-        return upperRightCorner;
-    }
+    public Coordinate getUpperRightCorner() { return upperRightCorner; }
 
     /**
      * {@inheritDoc}
@@ -122,19 +113,21 @@ public class BoundingBox implements Figure, Moveable {
      * {@inheritDoc}
      */
     @Override
-    public String shapeName() {
-        return "BoundingBox";
+    public String shapeName() { return "BoundingBox"; }
+
+    public boolean findPoint(Coordinate point) {
+        if (point == null)
+            throw new NullPointerException();
+        return findPoint(point.getX(), point.getY());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void move(double dx, double dy) {
-        lowerLeftCorner.setX(lowerLeftCorner.getX() + dx);
-        lowerLeftCorner.setY(lowerLeftCorner.getY() + dy);
-        upperRightCorner.setX(upperRightCorner.getX() + dx);
-        upperRightCorner.setY(upperRightCorner.getY() + dy);
+    public boolean findPoint(double x, double y) {
+        return x <= upperRightCorner.getX() && x >= lowerLeftCorner.getX() &&
+                y <= upperRightCorner.getY() && y >= lowerLeftCorner.getY();
     }
 
     /**
@@ -149,10 +142,9 @@ public class BoundingBox implements Figure, Moveable {
     public void setCoordinates(Coordinate lowerLeftCorner, Coordinate upperRightCorner) {
         if (lowerLeftCorner == null || upperRightCorner == null)
             throw new NullPointerException();
-        if (upperRightCorner.getX() >= lowerLeftCorner.getX() &&
-                upperRightCorner.getY() >= lowerLeftCorner.getY()) {
-            this.lowerLeftCorner.setCoordinate(lowerLeftCorner);
-            this.upperRightCorner.setCoordinate(upperRightCorner);
+        if (upperRightCorner.getX() >= lowerLeftCorner.getX() && upperRightCorner.getY() >= lowerLeftCorner.getY()) {
+            this.lowerLeftCorner = lowerLeftCorner;
+            this.upperRightCorner = upperRightCorner;
         }
     }
 
@@ -173,5 +165,14 @@ public class BoundingBox implements Figure, Moveable {
             upperRightCorner.setX(x2);
             upperRightCorner.setY(y2);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void move(double dx, double dy) {
+        setCoordinates(lowerLeftCorner.getX() + dx, lowerLeftCorner.getY() + dy,
+                upperRightCorner.getX() + dx, upperRightCorner.getY() + dy);
     }
 }

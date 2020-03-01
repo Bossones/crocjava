@@ -32,12 +32,7 @@ public class Annotation {
     public Annotation(Figure shape, String nameOfField) {
         if (shape == null || nameOfField == null)
             throw new NullPointerException();
-        if (shape instanceof BoundingBox) {
-            this.shape = new BoundingBox((BoundingBox)shape);
-        } else {
-            this.shape = new Circle((Circle)shape);
-        }
-        this.nameOfField = nameOfField + "";
+        setParameters(shape, nameOfField);
     }
 
     /**
@@ -63,11 +58,7 @@ public class Annotation {
     public void setParameters(Figure shape, String nameOfField) {
         if (shape == null || nameOfField == null)
             throw new NullPointerException();
-        if (shape instanceof BoundingBox) {
-            this.shape = new BoundingBox((BoundingBox)shape);
-        } else {
-            this.shape = new Circle((Circle)shape);
-        }
+        this.shape = shape;
         this.nameOfField = nameOfField + "";
     }
 
@@ -80,27 +71,16 @@ public class Annotation {
      * @return first founded annotation.
      */
     public static Annotation findByPoint(Annotation[] annotations, double x, double y) {
-        if (annotations == null) {
+        if (annotations == null)
             throw new NullPointerException();
-        }
-        for (Annotation ann : annotations) {
-            if (ann.getShape() instanceof BoundingBox) {
-                if ( ( (BoundingBox) ann.getShape() ).getLowerLeftCorner().getX() == x &&
-                        ( (BoundingBox) ann.getShape() ).getLowerLeftCorner().getY() == y )
-                    return ann;
-                else if ( ( (BoundingBox) ann.getShape() ).getUpperRightCorner().getX() == x &&
-                        ( (BoundingBox) ann.getShape() ).getUpperRightCorner().getY() == y )
-                    return ann;
-            } else {
-                if ( ( (Circle) ann.getShape() ).getCenter().getX() == x &&
-                        ( (Circle) ann.getShape() ).getCenter().getY() == y )
-                    return ann;
-            }
-        }
+        for (Annotation ann : annotations)
+            if (ann.getShape().findPoint(x, y))
+                return ann;
         return new Annotation();
     }
 
     public static void main(String[] args) {
+        // Create new array of annotations
         Annotation[] anno = new Annotation[] {
                 new Annotation(new Circle(5, 1, 2), "Circle 1"),
                 new Annotation(new BoundingBox(0, 0, 5, 5), "Bounding Box 1"),
@@ -109,30 +89,36 @@ public class Annotation {
                 new Annotation(new BoundingBox(5, 7, 1, 1), "Bounding Box 2")
         };
 
+        // output for each annotation
         for (Annotation annotation : anno) {
             System.out.println(annotation.getShape().shapeName());
             System.out.println(annotation.getNameOfField());
             System.out.println("----------------------------------");
         }
 
+        // new value for "BoundingBox 1" - "New Circle 4"
         anno[1].setParameters(new Circle(), "New Circle 4");
+        // get last figure properties
         Figure shp = anno[4].getShape();
         String nameOfField = anno[4].getNameOfField();
         System.out.println("Perimeter of last shape is: " + shp.perimeter() + "\nAnd its name: " + nameOfField);
 
         System.out.print("\n===============================================\n");
+        // output for each annotation
         for (Annotation annotation : anno) {
             System.out.println(annotation.getShape().shapeName());
             System.out.println(annotation.getNameOfField());
             System.out.println("----------------------------------");
         }
 
+        // move"Circle 2"
         ( (Circle) anno[2].getShape() ).move(10, 15);
 
         System.out.println("===============================================\n");
 
-        System.out.println(Annotation.findByPoint(anno, 5, 6).getShape().area() + "\n" +
-                Annotation.findByPoint(anno, 5, 6).getNameOfField());
+        // find first annotation contains point
+        System.out.println(Annotation.findByPoint(anno, 0, 0).getShape().area() + "\n" +
+                Annotation.findByPoint(anno, 0, 0).getNameOfField());
 
         System.out.println(Annotation.findByPoint(anno, 10, 15).getShape().area() + "\n" +
                 Annotation.findByPoint(anno, 10, 15).getNameOfField());
@@ -179,9 +165,11 @@ Bounding Box 2
 ===============================================
 
 0.0
-Circle 3
+Bounding Box 2
 12.566370614359172
 Circle 2
+
+
  */
 
 

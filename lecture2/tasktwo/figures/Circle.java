@@ -1,6 +1,7 @@
 package net.crocjava.lecture2.tasktwo.figures;
 
-import net.crocjava.lecture2.tasktwo.coord.*;
+import net.crocjava.lecture2.tasktwo.coord.Coordinate;
+import net.crocjava.lecture2.tasktwo.coord.Moveable;
 
 /**
  * A {@code Circle} is a circle shape and described by two parameters:
@@ -20,7 +21,7 @@ public class Circle implements Figure, Moveable {
 
     /**
      * The radius of this {@code Circle}
-     * If no radius is set it will set default to {@code (0,0)}
+     * If no radius is set it will set default to 0
      */
     private double radius;
 
@@ -28,41 +29,28 @@ public class Circle implements Figure, Moveable {
      * Constructs a {@code Circle} with no parameters.
      */
     public Circle() {
-        center = new Coordinate();
-        radius = 0.0;
+        setParameters(new Coordinate(), 0);
     }
 
     /**
      * Constructs a {@code Circle} with next parameters:
-     * If a radius is negative, then radius will set to default 0.
      *
      * @param center is a coordinate of the center {@code Circle}.
      * @param radius is a radius of {@code Circle}.
      */
     public Circle(Coordinate center, double radius) {
-        if (center == null)
-            throw  new NullPointerException();
-        this.center = new Coordinate(center);
-        if (radius >= 0)
-            this.radius = radius;
-        else
-            this.radius = 0;
+        setParameters(center, radius);
     }
 
     /**
      * Constructs a {@code Circle} with next parameters:
-     * If a radius is negative, then radius will set to default 0.
      *
      * @param x is an abscissa of the coordinate of the center {@code Circle}.
      * @param y is an ordinate of the coordinate of the center {@code Circle}.
      * @param radius is a radius of {@code Circle}.
      */
     public Circle(double x, double y, double radius) {
-        center = new Coordinate(x, y);
-        if (radius >= 0)
-            this.radius = radius;
-        else
-            this.radius = 0;
+        setParameters(new Coordinate(x, y), radius);
     }
 
     /**
@@ -102,15 +90,6 @@ public class Circle implements Figure, Moveable {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void move(double dx, double dy) {
-        center.setX(center.getX() + dx);
-        center.setY(center.getY() + dy);
-    }
-
-    /**
      * @return radius of this {@code Circle}.
      */
     public double getRadius() {
@@ -134,7 +113,7 @@ public class Circle implements Figure, Moveable {
     public void setParameters(Coordinate center, double radius) {
         if (center == null)
             throw new NullPointerException();
-        this.center.setCoordinate(center);
+        this.center = center;
         if (radius >= 0)
             this.radius = radius;
     }
@@ -153,5 +132,29 @@ public class Circle implements Figure, Moveable {
         if (radius >= 0)
             this.radius = radius;
     }
-}
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void move(double dx, double dy) {
+        setParameters(center.getX() + dx, center.getY() + dy, radius);
+    }
+
+    /**
+     * @see #findPoint(double, double) 
+     */
+    public boolean findPoint(Coordinate point) {
+        if (point == null)
+            throw new NullPointerException();
+        return findPoint(point.getX(), point.getY());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean findPoint(double x, double y) {
+        return Math.sqrt( Math.pow(x - center.getX(), 2) + Math.pow(y - center.getY(), 2) ) < radius;
+    }
+}
