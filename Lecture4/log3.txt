@@ -1,0 +1,5 @@
+3 hi everyone
+6 so am i
+9 i'm not sure
+11 and c++
+13 No, the best set is SortedSet!

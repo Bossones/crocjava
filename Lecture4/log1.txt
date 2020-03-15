@@ -1,0 +1,8 @@
+1 hi
+4 i am here
+7 i am a programmer
+10 do you like Java?
+12 TreeSet is used here
+14 Hey, this is 14th line
+15 Kek
+16 Shrek
