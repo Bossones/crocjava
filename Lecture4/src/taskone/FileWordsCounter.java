@@ -44,12 +44,7 @@ public class FileWordsCounter {
 
     private void countWords(String line) {
         Objects.requireNonNull(line);
-        String[] words;
-        words = line.split(" ");
-        for (String word : words) {
-            if (!word.equals(" ") && !word.equals("") )
-                counterWords++;
-        }
+        counterWords += line.split("[ ]+").length;
     }
 
     public void setNewPath(Path path) {
