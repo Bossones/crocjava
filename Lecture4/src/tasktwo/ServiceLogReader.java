@@ -27,7 +27,7 @@ public class ServiceLogReader {
      * @param filesPaths - a set of file paths.
      */
     public void setNewPaths(String[] filesPaths) {
-        Objects.requireNonNull(filesPaths);
+        Objects.requireNonNull(filesPaths, "Null paths");
         if (filesPaths.length == 0)
             throw new IllegalArgumentException();
         paths = new Path[filesPaths.length];
@@ -38,9 +38,12 @@ public class ServiceLogReader {
 
     /**
      * Prints all logs to the standard output stream.
+     * This method uses ArrayList.sort() method for sorting strings.
      */
     public void createOutLog() {
-        TreeSet<String> stringBuffer = new TreeSet<>();
+        ArrayList<String> stringBuffer = new ArrayList<>();
+        Comparator<String> comparator =
+                Comparator.comparingInt(o -> Integer.parseInt(o.replaceAll("\\D", "") ) );
         BufferedReader[] bufferedReaders = new BufferedReader[paths.length];
         //init readers
         for (int i = 0; i < paths.length; i++) {
@@ -61,11 +64,23 @@ public class ServiceLogReader {
                     e.printStackTrace();
                 }
                 if (i == bufferedReaders.length - 1) {
+                    stringBuffer.sort(comparator);
                     printOut(stringBuffer);
                 }
             }
         }
+        try {
+            closeReaders(bufferedReaders);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
 
+    }
+
+    private void closeReaders(BufferedReader[] bufferedReaders) throws IOException {
+        Objects.requireNonNull(bufferedReaders, "Null buffered readers");
+        for (BufferedReader bufferedReader : bufferedReaders)
+            bufferedReader.close();
     }
 
     private boolean checkFiles(BufferedReader[] bufferedReaders) {
@@ -83,14 +98,13 @@ public class ServiceLogReader {
         return check;
     }
 
-
-    private void printOut(TreeSet<String> stringBuffer) {
+    private void printOut(ArrayList<String> stringBuffer) {
         Objects.requireNonNull(stringBuffer);
         while (!stringBuffer.isEmpty())
-            System.out.println(stringBuffer.pollFirst());
+            System.out.println(stringBuffer.remove(0));
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         ServiceLogReader serviceLogReader = new ServiceLogReader(args);
         serviceLogReader.createOutLog();
     }
@@ -107,7 +121,8 @@ public class ServiceLogReader {
                 15 Kek
                 16 Shrek
 
-        log2:   2 hello
+        log2:   0 hahahah
+                2 hello
                 5 me too
                 8 it was a joke
                 10 yes, of course
