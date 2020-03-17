@@ -41,9 +41,10 @@ public class ServiceLogReader {
      * This method uses ArrayList.sort() method for sorting strings.
      */
     public void createOutLog() {
-        ArrayList<String> stringBuffer = new ArrayList<>();
+//        ArrayList<String> stringBuffer = new ArrayList<>();
         Comparator<String> comparator =
-                Comparator.comparingInt(o -> Integer.parseInt(o.replaceAll("\\D", "") ) );
+                Comparator.comparingInt(o -> Integer.parseInt(o.replaceAll("[ ].+", "") ) );
+        TreeSet<String> stringBuffer = new TreeSet<>(comparator);
         BufferedReader[] bufferedReaders = new BufferedReader[paths.length];
         //init readers
         for (int i = 0; i < paths.length; i++) {
@@ -64,8 +65,9 @@ public class ServiceLogReader {
                     e.printStackTrace();
                 }
                 if (i == bufferedReaders.length - 1) {
-                    stringBuffer.sort(comparator);
-                    printOut(stringBuffer);
+//                    stringBuffer.sort(comparator);
+//                    System.out.println(stringBuffer.remove(0) );
+                    System.out.println(stringBuffer.pollFirst() );
                 }
             }
         }
@@ -74,7 +76,7 @@ public class ServiceLogReader {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-
+        printOut(stringBuffer);
     }
 
     private void closeReaders(BufferedReader[] bufferedReaders) throws IOException {
@@ -98,10 +100,10 @@ public class ServiceLogReader {
         return check;
     }
 
-    private void printOut(ArrayList<String> stringBuffer) {
+    private void printOut(TreeSet<String> stringBuffer) {
         Objects.requireNonNull(stringBuffer);
         while (!stringBuffer.isEmpty())
-            System.out.println(stringBuffer.remove(0));
+            System.out.println(stringBuffer.pollFirst() );
     }
 
     public static void main(String[] args) {
@@ -134,6 +136,7 @@ public class ServiceLogReader {
                 11 and c++
                 13 No, the best set is SortedSet!
     output:
+        0 hahahah
         1 hi
         2 hello
         3 hi everyone
