@@ -14,16 +14,24 @@ public class ServiceLogReader {
      */
     private Path[] paths;
 
+    private int indexOfNextPrint;
+
+    private int isOpen;
+
     /**
      * Constructs {@code ServiceLogReader} for reading logs from {@param filesPaths}
+     *
      * @param filesPaths - a set of file paths.
      */
     public ServiceLogReader(String[] filesPaths) {
         setNewPaths(filesPaths);
+        indexOfNextPrint = 0;
+        isOpen = filesPaths.length;
     }
 
     /**
      * Sets the new file paths.
+     *
      * @param filesPaths - a set of file paths.
      */
     public void setNewPaths(String[] filesPaths) {
@@ -38,15 +46,65 @@ public class ServiceLogReader {
 
     /**
      * Prints all logs to the standard output stream.
-     * This method uses ArrayList.sort() method for sorting strings.
      */
     public void createOutLog() {
-//        ArrayList<String> stringBuffer = new ArrayList<>();
-        Comparator<String> comparator =
-                Comparator.comparingInt(o -> Integer.parseInt(o.replaceAll("[ ].+", "") ) );
-        TreeSet<String> stringBuffer = new TreeSet<>(comparator);
+        boolean check = true;
+        String[] stringsBuffer = new String[paths.length];
+        BufferedReader[] bufferedReaders = openReaders();
+        for (int i = 0; i < paths.length; i++) {
+            try {
+                if ((stringsBuffer[i] = bufferedReaders[i].readLine()) == null) {
+                    isOpen--;
+                    stringsBuffer[i] = "" + Integer.MAX_VALUE;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        while (isOpen != 0) {
+            printNextStringLog(stringsBuffer);
+            try {
+                readNextStringLog(stringsBuffer, bufferedReaders);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            closeReaders(bufferedReaders);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void printNextStringLog(String[] stringsBuffer) {
+        Objects.requireNonNull(stringsBuffer, "Strings buffer is null");
+        String toPrint = stringsBuffer[0];
+        indexOfNextPrint = 0;
+        for (int i = 1; i < stringsBuffer.length; i++) {
+            if (Integer.parseInt(toPrint.replaceAll("[ ].+", "")) >
+                    Integer.parseInt(stringsBuffer[i].replaceAll("[ ].+", ""))) {
+                toPrint = stringsBuffer[i];
+                indexOfNextPrint = i;
+            }
+        }
+        System.out.println(toPrint);
+    }
+
+    private void readNextStringLog(String[] stringsBuffer, BufferedReader[] bufferedReaders) throws IOException {
+        Objects.requireNonNull(stringsBuffer, "String buffer is null");
+        Objects.requireNonNull(bufferedReaders, "Buffered reader is null");
+        if (stringsBuffer.length == 0)
+            throw new IllegalArgumentException("String buffer is empty");
+        if (bufferedReaders.length == 0)
+            throw new IllegalArgumentException("Buffered readers are empty");
+        if ((stringsBuffer[indexOfNextPrint] = bufferedReaders[indexOfNextPrint].readLine()) == null) {
+            stringsBuffer[indexOfNextPrint] = "" + Integer.MAX_VALUE;
+            isOpen--;
+        }
+    }
+
+    private BufferedReader[] openReaders() {
         BufferedReader[] bufferedReaders = new BufferedReader[paths.length];
-        //init readers
         for (int i = 0; i < paths.length; i++) {
             try {
                 bufferedReaders[i] = Files.newBufferedReader(paths[i]);
@@ -54,29 +112,7 @@ public class ServiceLogReader {
                 e.printStackTrace();
             }
         }
-        //reading from all files
-        while (checkFiles(bufferedReaders)) {
-            for (int i = 0; i < bufferedReaders.length; i++) {
-                try {
-                    if (bufferedReaders[i].ready()) {
-                        stringBuffer.add(bufferedReaders[i].readLine());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (i == bufferedReaders.length - 1) {
-//                    stringBuffer.sort(comparator);
-//                    System.out.println(stringBuffer.remove(0) );
-                    System.out.println(stringBuffer.pollFirst() );
-                }
-            }
-        }
-        try {
-            closeReaders(bufferedReaders);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        printOut(stringBuffer);
+        return bufferedReaders;
     }
 
     private void closeReaders(BufferedReader[] bufferedReaders) throws IOException {
@@ -85,33 +121,11 @@ public class ServiceLogReader {
             bufferedReader.close();
     }
 
-    private boolean checkFiles(BufferedReader[] bufferedReaders) {
-        Objects.requireNonNull(bufferedReaders);
-        boolean check = false;
-        for (BufferedReader bufferedReader : bufferedReaders) {
-            try {
-                if (bufferedReader.ready()) {
-                    check = true;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return check;
-    }
-
-    private void printOut(TreeSet<String> stringBuffer) {
-        Objects.requireNonNull(stringBuffer);
-        while (!stringBuffer.isEmpty())
-            System.out.println(stringBuffer.pollFirst() );
-    }
-
     public static void main(String[] args) {
         ServiceLogReader serviceLogReader = new ServiceLogReader(args);
         serviceLogReader.createOutLog();
     }
 }
-
 /*
     input:
         log1:   1 hi
