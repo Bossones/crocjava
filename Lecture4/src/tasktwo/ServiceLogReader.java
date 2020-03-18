@@ -78,9 +78,11 @@ public class ServiceLogReader {
 
     private void printNextStringLog(String[] stringsBuffer) {
         Objects.requireNonNull(stringsBuffer, "Strings buffer is null");
-        String toPrint = stringsBuffer[0];
+        if (stringsBuffer.length == 0)
+            throw new IllegalArgumentException("Strings Buffer is empty");
+        String toPrint = "" + Integer.MAX_VALUE;
         indexOfNextPrint = 0;
-        for (int i = 1; i < stringsBuffer.length; i++) {
+        for (int i = 0; i < stringsBuffer.length; i++) {
             if (!stringsBuffer[i].equals("")) {
                 if (Integer.parseInt(toPrint.replaceAll("[ ].+", "")) >
                         Integer.parseInt(stringsBuffer[i].replaceAll("[ ].+", ""))) {
