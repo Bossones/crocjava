@@ -55,7 +55,7 @@ public class ServiceLogReader {
             try {
                 if ((stringsBuffer[i] = bufferedReaders[i].readLine()) == null) {
                     isOpen--;
-                    stringsBuffer[i] = "" + Integer.MAX_VALUE;
+                    stringsBuffer[i] = "";
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -81,10 +81,12 @@ public class ServiceLogReader {
         String toPrint = stringsBuffer[0];
         indexOfNextPrint = 0;
         for (int i = 1; i < stringsBuffer.length; i++) {
-            if (Integer.parseInt(toPrint.replaceAll("[ ].+", "")) >
-                    Integer.parseInt(stringsBuffer[i].replaceAll("[ ].+", ""))) {
-                toPrint = stringsBuffer[i];
-                indexOfNextPrint = i;
+            if (!stringsBuffer[i].equals("")) {
+                if (Integer.parseInt(toPrint.replaceAll("[ ].+", "")) >
+                        Integer.parseInt(stringsBuffer[i].replaceAll("[ ].+", ""))) {
+                    toPrint = stringsBuffer[i];
+                    indexOfNextPrint = i;
+                }
             }
         }
         System.out.println(toPrint);
@@ -98,7 +100,7 @@ public class ServiceLogReader {
         if (bufferedReaders.length == 0)
             throw new IllegalArgumentException("Buffered readers are empty");
         if ((stringsBuffer[indexOfNextPrint] = bufferedReaders[indexOfNextPrint].readLine()) == null) {
-            stringsBuffer[indexOfNextPrint] = "" + Integer.MAX_VALUE;
+            stringsBuffer[indexOfNextPrint] = "";
             isOpen--;
         }
     }
