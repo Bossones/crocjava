@@ -1,10 +1,5 @@
 package taskone;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.stream.Stream;
-
 public class ReverseVowels {
 
     private String inputString;
@@ -73,3 +68,17 @@ public class ReverseVowels {
         System.out.println(rev5.reverseVowelsInString());
     }
 }
+/*
+    input:
+        index
+        palindrome
+        garage
+        reflect
+        array
+    output:
+        endix
+        pelondrima
+        geraga
+        reflect
+        yrraa
+ */
