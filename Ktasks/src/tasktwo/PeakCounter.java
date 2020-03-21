@@ -82,8 +82,6 @@ public class PeakCounter {
         int count;
         for (int i = 0; i < talkTimes.size(); i++) {
             count = 1;
-            if (talkTimes.get(i).getCallTime() < 2)
-                continue;
             for (int j = 0; j < talkTimes.size(); j++) {
                 if ((i != j) && (talkTimes.get(i).getEnd() >= talkTimes.get(j).getBegin() ) &&
                         (talkTimes.get(j).getEnd() >= talkTimes.get(i).getBegin() ) ) {
@@ -119,4 +117,20 @@ public class PeakCounter {
         PeakCounter peakCounter = new PeakCounter("C:\\Users\\Горожанкина\\Desktop\\Учебка\\JavaLearning\\crock\\crockjava\\Ktasks\\resources\\log.txt");
         System.out.println(peakCounter.countMaxTalk());
     }
+
 }
+/*
+    input :
+        1,5
+        2,10
+        3,4
+        5,6
+        6,11
+        10,16
+        14,18
+        19,22
+        20,24
+        22,24
+    output:
+        6
+ */
