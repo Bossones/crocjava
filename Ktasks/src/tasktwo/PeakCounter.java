@@ -116,7 +116,7 @@ public class PeakCounter {
     }
 
     public static void main(String[] args) {
-        PeakCounter peakCounter = new PeakCounter("C:\\Users\\Горожанкина\\Desktop\\Учебка\\JavaLearning\\crock\\crockjava\\Ktasks\\resources\\log.txt");
+        PeakCounter peakCounter = new PeakCounter("log.txt");
         System.out.println(peakCounter.countMaxTalk());
     }
 }
